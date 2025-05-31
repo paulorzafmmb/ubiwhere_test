@@ -1,0 +1,33 @@
+# @Author: Paulo Barbosa
+# @Date:   2025-05-28 22:55:03
+# @Last Modified by:   Paulo Barbosa
+# @Last Modified time: 2025-05-30 13:47:34
+
+version: '2.1'
+
+services:
+  web:
+    build: .
+    command: gunicorn ubiwhere_test.wsgi:application --bind 0.0.0.0:8000 --reload
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_DB: ubiwhere_test
+      POSTGRES_USER: ubiwhere
+      POSTGRES_PASSWORD: ubiwhere
+    ports:
+      - '0.0.0.0:5440:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
